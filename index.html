@@ -17,7 +17,8 @@
   }
   body { padding: 14px 12px 40px; }
   h1 { margin: 0 0 14px; font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
-  .label { display: block; font-size: 12px; opacity: 0.65; margin-bottom: 6px; }
+  .label { display: block; font-size: 12px; opacity: 0.65; margin-bottom: 6px; margin-top: 10px; }
+  .label:first-of-type { margin-top: 0; }
   input {
     width: 100%; padding: 13px 14px; font-size: 16px;
     border-radius: 12px; border: 1px solid var(--tg-theme-hint-color, #3a3a3c);
@@ -28,7 +29,7 @@
   input:focus { border-color: var(--tg-theme-button-color, #2ea6ff); }
   button.main-btn {
     width: 100%; padding: 13px; font-size: 16px; font-weight: 600;
-    border: none; border-radius: 12px; margin-top: 10px;
+    border: none; border-radius: 12px; margin-top: 14px;
     background: var(--tg-theme-button-color, #2ea6ff);
     color: var(--tg-theme-button-text-color, #ffffff);
     cursor: pointer; transition: opacity 0.15s;
@@ -38,9 +39,10 @@
     margin: 14px 0 0; padding: 11px 13px;
     background: rgba(255, 204, 0, 0.12);
     border-left: 3px solid #ffcc00;
-    border-radius: 8px; font-size: 13px; line-height: 1.5;
+    border-radius: 8px; font-size: 13px; line-height: 1.6;
   }
   .base-info b { color: #ffcc00; }
+  .base-info .muted { opacity: 0.6; font-size: 12px; }
   .filters { display: flex; gap: 6px; flex-wrap: wrap; margin: 14px 0 6px; }
   .chip {
     padding: 6px 11px; border-radius: 20px; font-size: 12px;
@@ -62,70 +64,31 @@
     overflow: hidden;
   }
   .coll-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 4px;
-    cursor: pointer;
-    user-select: none;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 4px; cursor: pointer; user-select: none;
     transition: background 0.15s;
   }
   .coll-header:active { background: rgba(255,255,255,0.04); }
-  .coll-left {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    flex: 1;
-    min-width: 0;
-  }
-  .coll-name {
-    font-size: 14px;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .coll-meta {
-    font-size: 11px;
-    opacity: 0.5;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .coll-meta .rarity-tag {
-    text-transform: lowercase;
-  }
+  .coll-left { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+  .coll-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .coll-meta { font-size: 11px; opacity: 0.5; display: flex; gap: 8px; flex-wrap: wrap; }
   .rarity-common    { color: #8e8e93; }
   .rarity-special   { color: #5ac8fa; }
   .rarity-event     { color: #ff9500; }
   .rarity-community { color: #af52de; }
   .rarity-premium   { color: #ffcc00; }
-  .coll-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-left: 10px;
-  }
-  .coll-common-price {
-    color: #4cd964;
-    font-weight: 700;
-    font-size: 14px;
-    white-space: nowrap;
-  }
+  .coll-right { display: flex; align-items: center; gap: 8px; margin-left: 10px; }
+  .coll-common-price { color: #4cd964; font-weight: 700; font-size: 14px; white-space: nowrap; }
   .chev {
     width: 8px; height: 8px;
     border-right: 2px solid currentColor;
     border-bottom: 2px solid currentColor;
     transform: rotate(-45deg);
-    opacity: 0.5;
-    transition: transform 0.2s;
-    flex-shrink: 0;
+    opacity: 0.5; transition: transform 0.2s; flex-shrink: 0;
   }
   .coll-item.open .chev { transform: rotate(45deg); }
-
   .rarities {
-    max-height: 0;
-    overflow: hidden;
+    max-height: 0; overflow: hidden;
     transition: max-height 0.25s ease;
     background: rgba(255,255,255,0.02);
     border-radius: 8px;
@@ -133,17 +96,14 @@
   .coll-item.open .rarities { max-height: 500px; }
   .rarities-inner { padding: 8px 4px 12px; }
   .rarity-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 8px;
-    font-size: 13px;
+    display: flex; justify-content: space-between;
+    padding: 6px 8px; font-size: 13px;
     border-bottom: 1px solid rgba(255,255,255,0.04);
   }
   .rarity-row:last-child { border-bottom: none; }
   .rarity-row .rname { opacity: 0.75; }
   .rarity-row .rprice { color: #4cd964; font-weight: 600; white-space: nowrap; }
   .rarity-row .rmult { opacity: 0.4; font-size: 11px; margin-left: 6px; }
-
   .empty { text-align: center; padding: 40px 20px; opacity: 0.5; font-size: 14px; }
   .summary {
     margin-top: 16px; padding: 12px;
@@ -157,8 +117,12 @@
 
 <h1>Calculator</h1>
 
-<label class="label" for="basePrice">Цена common-фишки «x kaidzen 1»</label>
-<input id="basePrice" type="number" step="0.0001" inputmode="decimal" placeholder="например 5" value="5">
+<label class="label" for="basePrice">Цена common-фишки «x kaidzen 1» (базовая)</label>
+<input id="basePrice" type="number" step="0.0001" inputmode="decimal" placeholder="5" value="5">
+
+<label class="label" for="minMarket">Минимальная цена любой фишки на маркете (опционально)</label>
+<input id="minMarket" type="number" step="0.0001" inputmode="decimal" placeholder="например 0.093">
+
 <button class="main-btn" onclick="calculate()">Пересчитать</button>
 
 <div id="baseInfo" class="base-info" style="display:none"></div>
@@ -284,18 +248,33 @@ const COLLECTIONS = [
 let currentData = [];
 let activeFilter = "all";
 let searchQuery = "";
-const openState = {}; // { collectionName: bool }
+const openState = {};
 
 function commonPrice(emission, base) {
   return base * BASE_EMISSION / emission;
 }
 
 function calculate() {
-  const base = parseFloat(document.getElementById('basePrice').value);
+  let base = parseFloat(document.getElementById('basePrice').value);
+  const minMarket = parseFloat(document.getElementById('minMarket').value);
+
   if (!base || base <= 0 || isNaN(base)) {
-    if (tg?.showAlert) tg.showAlert('Введи корректную цену');
-    else alert('Введи корректную цену');
+    if (tg?.showAlert) tg.showAlert('Введи корректную цену x kaidzen 1');
+    else alert('Введи корректную цену x kaidzen 1');
     return;
+  }
+
+  // если задана минимальная цена на маркете — корректируем базу
+  let adjusted = false;
+  let origBase = base;
+  if (minMarket && minMarket > 0) {
+    // находим самую дешёвую позицию (common с макс эмиссией)
+    const maxEmission = Math.max(...COLLECTIONS.map(c => c.emission));
+    const calcMin = commonPrice(maxEmission, base);
+    if (minMarket > calcMin) {
+      base = base * (minMarket / calcMin);
+      adjusted = true;
+    }
   }
 
   currentData = COLLECTIONS.map(c => {
@@ -309,10 +288,16 @@ function calculate() {
 
   const info = document.getElementById('baseInfo');
   info.style.display = 'block';
-  const xk1 = currentData.find(c => c.name === "x kaidzen 1");
-  info.innerHTML =
-    `Базовая цена common «x kaidzen 1»: <b>${formatPrice(base)}</b><br>` +
-    `Разница эмиссии x kaidzen 1: <b>1.00×</b> · common в таблице: <b>${formatPrice(xk1.commonPrice)}</b>`;
+
+  let html = '';
+  if (adjusted) {
+    html += `База скорректирована по маркету:<br>`;
+    html += `Было: <b>${formatPrice(origBase)}</b> → Стало: <b>${formatPrice(base)}</b>`;
+    html += `<div class="muted">Самая дешёвая common-позиция при базе ${formatPrice(origBase)}: ${formatPrice(commonPrice(Math.max(...COLLECTIONS.map(c=>c.emission)), origBase))}, на маркете: ${formatPrice(minMarket)}</div>`;
+  } else {
+    html += `Базовая цена common «x kaidzen 1»: <b>${formatPrice(base)}</b>`;
+  }
+  info.innerHTML = html;
 
   document.getElementById('filters').style.display = 'flex';
   document.getElementById('searchWrap').style.display = 'block';
@@ -344,7 +329,7 @@ function renderList() {
           <div class="coll-meta">
             <span class="rarity-${c.rarity}">${c.rarity}</span>
             <span>×${c.count}</span>
-            <span>эмиссия ${c.emission.toLocaleString('ru-RU')}</span>
+            <span>${c.emission.toLocaleString('ru-RU')}</span>
             <span>${diff}×</span>
           </div>
         </div>
@@ -384,19 +369,20 @@ function renderSummary(base) {
   const expensivest = [...currentData].sort((a, b) => b.commonPrice - a.commonPrice)[0];
 
   el.innerHTML =
-    `Коллекций: <b>${COLLECTIONS.length}</b> · всего фишек в коллекциях: <b>${totalCount}</b><br>` +
+    `Коллекций: <b>${COLLECTIONS.length}</b> · фишек в коллекциях: <b>${totalCount}</b><br>` +
     `Суммарная эмиссия: <b>${totalEmission.toLocaleString('ru-RU')}</b><br>` +
     `Мин. common: <b>${escapeHtml(cheapest.name)}</b> — ${formatPrice(cheapest.commonPrice)}<br>` +
     `Макс. common: <b>${escapeHtml(expensivest.name)}</b> — ${formatPrice(expensivest.commonPrice)}`;
 }
 
+// адаптивное форматирование:
+// >= 1000 -> 1 знак; >= 100 -> 2; >= 1 -> 2; >= 0.01 -> 2; >= 0.0001 -> 4; иначе 6
 function formatPrice(p) {
-  if (p >= 1000)  return p.toFixed(1);
-  if (p >= 100)   return p.toFixed(2);
-  if (p >= 1)     return p.toFixed(3);
-  if (p >= 0.01)  return p.toFixed(4);
-  if (p >= 0.0001) return p.toFixed(6);
-  return p.toFixed(8);
+  if (p >= 1000)   return p.toFixed(1);
+  if (p >= 1)      return p.toFixed(2);
+  if (p >= 0.01)   return p.toFixed(2);
+  if (p >= 0.0001) return p.toFixed(4);
+  return p.toFixed(6);
 }
 
 function escapeHtml(s) {
@@ -407,7 +393,6 @@ function escapeHtml(s) {
 function escapeAttr(s) { return escapeHtml(s).replace(/"/g, '&quot;'); }
 function cssEscape(s) { return String(s).replace(/(["\\])/g, '\\$1'); }
 
-// events
 document.getElementById('filters').addEventListener('click', e => {
   const chip = e.target.closest('.chip');
   if (!chip) return;
@@ -422,7 +407,6 @@ document.getElementById('search').addEventListener('input', e => {
   renderList();
 });
 
-// автопересчёт при загрузке
 window.addEventListener('DOMContentLoaded', () => {
   calculate();
 });
