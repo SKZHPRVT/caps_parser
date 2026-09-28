@@ -16,39 +16,55 @@
     min-height: 100vh;
   }
   body { padding: 14px 12px 40px; }
-  h1 { margin: 0 0 14px; font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
-  .label { display: block; font-size: 12px; opacity: 0.65; margin-bottom: 6px; margin-top: 10px; }
+  h1 { margin: 0 0 14px; font-size: 22px; font-weight: 800; letter-spacing: -0.4px; }
+  .label { display: block; font-size: 12px; opacity: 0.7; margin-bottom: 6px; margin-top: 12px; font-weight: 600; }
   .label:first-of-type { margin-top: 0; }
-  input {
-    width: 100%; padding: 13px 14px; font-size: 16px;
+  input, select {
+    width: 100%; padding: 13px 14px; font-size: 16px; font-weight: 600;
     border-radius: 12px; border: 1px solid var(--tg-theme-hint-color, #3a3a3c);
     background: var(--tg-theme-secondary-bg-color, #2c2c2e);
     color: var(--tg-theme-text-color, #fff);
     outline: none; transition: border-color 0.15s;
+    -webkit-appearance: none; appearance: none;
   }
-  input:focus { border-color: var(--tg-theme-button-color, #2ea6ff); }
+  select {
+    background-image: linear-gradient(45deg, transparent 50%, #888 50%), linear-gradient(135deg, #888 50%, transparent 50%);
+    background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 36px;
+  }
+  input:focus, select:focus { border-color: var(--tg-theme-button-color, #2ea6ff); }
   button.main-btn {
-    width: 100%; padding: 13px; font-size: 16px; font-weight: 600;
+    width: 100%; padding: 14px; font-size: 16px; font-weight: 700;
     border: none; border-radius: 12px; margin-top: 14px;
     background: var(--tg-theme-button-color, #2ea6ff);
     color: var(--tg-theme-button-text-color, #ffffff);
     cursor: pointer; transition: opacity 0.15s;
   }
   button.main-btn:active { opacity: 0.75; }
+
+  .row2 { display: flex; gap: 8px; }
+  .row2 > * { flex: 1; }
+  .row2 .col-rarity { flex: 0 0 130px; }
+
   .base-info {
     margin: 14px 0 0; padding: 11px 13px;
     background: rgba(255, 204, 0, 0.12);
     border-left: 3px solid #ffcc00;
     border-radius: 8px; font-size: 13px; line-height: 1.6;
+    font-weight: 600;
   }
   .base-info b { color: #ffcc00; }
-  .base-info .muted { opacity: 0.6; font-size: 12px; }
+  .base-info .muted { opacity: 0.6; font-size: 12px; font-weight: 400; }
+
   .filters { display: flex; gap: 6px; flex-wrap: wrap; margin: 14px 0 6px; }
   .chip {
-    padding: 6px 11px; border-radius: 20px; font-size: 12px;
+    padding: 7px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
     background: var(--tg-theme-secondary-bg-color, #2c2c2e);
     border: 1px solid var(--tg-theme-hint-color, #3a3a3c);
     cursor: pointer; user-select: none; transition: all 0.15s;
+    text-transform: lowercase;
   }
   .chip.active {
     background: var(--tg-theme-button-color, #2ea6ff);
@@ -65,20 +81,56 @@
   }
   .coll-header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 4px; cursor: pointer; user-select: none;
+    padding: 14px 4px; cursor: pointer; user-select: none;
     transition: background 0.15s;
   }
   .coll-header:active { background: rgba(255,255,255,0.04); }
-  .coll-left { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
-  .coll-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .coll-meta { font-size: 11px; opacity: 0.5; display: flex; gap: 8px; flex-wrap: wrap; }
+  .coll-left { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+  .coll-name {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .coll-meta {
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0.55;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    text-transform: lowercase;
+  }
   .rarity-common    { color: #8e8e93; }
   .rarity-special   { color: #5ac8fa; }
   .rarity-event     { color: #ff9500; }
   .rarity-community { color: #af52de; }
   .rarity-premium   { color: #ffcc00; }
+
   .coll-right { display: flex; align-items: center; gap: 8px; margin-left: 10px; }
-  .coll-common-price { color: #4cd964; font-weight: 700; font-size: 14px; white-space: nowrap; }
+  .coll-price-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .coll-common-price {
+    color: #4cd964;
+    font-weight: 800;
+    font-size: 15px;
+    white-space: nowrap;
+  }
+  .coll-diff {
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+  .coll-diff.up   { color: #ff453a; }   /* дороже на маркете — выгодно продавать */
+  .coll-diff.down { color: #4cd964; }   /* дешевле на маркете — выгодно покупать */
+  .coll-diff.eq   { color: #8e8e93; }
+
   .chev {
     width: 8px; height: 8px;
     border-right: 2px solid currentColor;
@@ -87,41 +139,58 @@
     opacity: 0.5; transition: transform 0.2s; flex-shrink: 0;
   }
   .coll-item.open .chev { transform: rotate(45deg); }
+
   .rarities {
     max-height: 0; overflow: hidden;
-    transition: max-height 0.25s ease;
+    transition: max-height 0.3s ease;
     background: rgba(255,255,255,0.02);
     border-radius: 8px;
   }
-  .coll-item.open .rarities { max-height: 500px; }
+  .coll-item.open .rarities { max-height: 600px; }
   .rarities-inner { padding: 8px 4px 12px; }
   .rarity-row {
-    display: flex; justify-content: space-between;
-    padding: 6px 8px; font-size: 13px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 8px; font-size: 13px;
     border-bottom: 1px solid rgba(255,255,255,0.04);
   }
   .rarity-row:last-child { border-bottom: none; }
-  .rarity-row .rname { opacity: 0.75; }
-  .rarity-row .rprice { color: #4cd964; font-weight: 600; white-space: nowrap; }
-  .rarity-row .rmult { opacity: 0.4; font-size: 11px; margin-left: 6px; }
+  .rarity-row .rname { opacity: 0.8; font-weight: 700; }
+  .rarity-row .rprice { color: #4cd964; font-weight: 800; white-space: nowrap; }
+  .rarity-row .rmult { opacity: 0.4; font-size: 11px; margin-left: 6px; font-weight: 600; }
+  .rarity-row .rdiff {
+    font-size: 11px; font-weight: 800; margin-left: 10px;
+  }
+  .rarity-row .rdiff.up   { color: #ff453a; }
+  .rarity-row .rdiff.down { color: #4cd964; }
+  .rarity-row .rdiff.eq   { color: #8e8e93; opacity: 0.6; }
+
   .empty { text-align: center; padding: 40px 20px; opacity: 0.5; font-size: 14px; }
   .summary {
     margin-top: 16px; padding: 12px;
     background: var(--tg-theme-secondary-bg-color, #2c2c2e);
-    border-radius: 10px; font-size: 12px; opacity: 0.7; line-height: 1.6;
+    border-radius: 10px; font-size: 12px; opacity: 0.75; line-height: 1.7;
+    font-weight: 600;
   }
-  .summary b { opacity: 1; }
+  .summary b { opacity: 1; font-weight: 800; }
 </style>
 </head>
 <body>
 
 <h1>Calculator</h1>
 
-<label class="label" for="basePrice">Цена common-фишки «x kaidzen 1» (базовая)</label>
+<label class="label" for="basePrice">Цена common «x kaidzen 1»</label>
 <input id="basePrice" type="number" step="0.0001" inputmode="decimal" placeholder="5" value="5">
 
-<label class="label" for="minMarket">Минимальная цена любой фишки на маркете (опционально)</label>
+<label class="label" for="minMarket">Мин. цена ЛЮБОЙ фишки на маркете (опционально)</label>
 <input id="minMarket" type="number" step="0.0001" inputmode="decimal" placeholder="например 0.093">
+
+<label class="label">Сравнить с ценой конкретной редкости на маркете</label>
+<div class="row2">
+  <select id="compareRarity">
+    <option value="">— выбери редкость —</option>
+  </select>
+  <input id="comparePrice" type="number" step="0.0001" inputmode="decimal" placeholder="цена">
+</div>
 
 <button class="main-btn" onclick="calculate()">Пересчитать</button>
 
@@ -248,10 +317,45 @@ const COLLECTIONS = [
 let currentData = [];
 let activeFilter = "all";
 let searchQuery = "";
+let compareRarityKey = "";
+let compareMarketPrice = null;
 const openState = {};
+
+// заполняем селект редкостей
+const sel = document.getElementById('compareRarity');
+RARITIES.forEach(r => {
+  const opt = document.createElement('option');
+  opt.value = r.key;
+  opt.textContent = r.label;
+  sel.appendChild(opt);
+});
+sel.addEventListener('change', e => { compareRarityKey = e.target.value; });
+
+document.getElementById('comparePrice').addEventListener('input', e => {
+  const v = parseFloat(e.target.value);
+  compareMarketPrice = (v && v > 0) ? v : null;
+});
 
 function commonPrice(emission, base) {
   return base * BASE_EMISSION / emission;
+}
+
+function calcDiffPercent(calculated, market) {
+  if (!market || market <= 0 || !calculated || calculated <= 0) return null;
+  return ((market - calculated) / calculated) * 100;
+}
+
+function diffClass(pct) {
+  if (pct === null) return '';
+  if (pct > 0.5) return 'up';
+  if (pct < -0.5) return 'down';
+  return 'eq';
+}
+
+function formatDiff(pct) {
+  if (pct === null) return '';
+  const sign = pct > 0 ? '+' : '';
+  return `${sign}${pct.toFixed(1)}%`;
 }
 
 function calculate() {
@@ -264,11 +368,9 @@ function calculate() {
     return;
   }
 
-  // если задана минимальная цена на маркете — корректируем базу
   let adjusted = false;
   let origBase = base;
   if (minMarket && minMarket > 0) {
-    // находим самую дешёвую позицию (common с макс эмиссией)
     const maxEmission = Math.max(...COLLECTIONS.map(c => c.emission));
     const calcMin = commonPrice(maxEmission, base);
     if (minMarket > calcMin) {
@@ -286,16 +388,31 @@ function calculate() {
     };
   });
 
+  // % отклонение, если задана редкость + цена
+  let compareActive = false;
+  if (compareRarityKey && compareMarketPrice) {
+    compareActive = true;
+    currentData = currentData.map(c => {
+      const row = c.prices.find(p => p.key === compareRarityKey);
+      const diff = calcDiffPercent(row.price, compareMarketPrice);
+      return { ...c, compareDiff: diff, compareRarityKey };
+    });
+  } else {
+    currentData = currentData.map(c => ({ ...c, compareDiff: null }));
+  }
+
   const info = document.getElementById('baseInfo');
   info.style.display = 'block';
-
   let html = '';
   if (adjusted) {
     html += `База скорректирована по маркету:<br>`;
     html += `Было: <b>${formatPrice(origBase)}</b> → Стало: <b>${formatPrice(base)}</b>`;
-    html += `<div class="muted">Самая дешёвая common-позиция при базе ${formatPrice(origBase)}: ${formatPrice(commonPrice(Math.max(...COLLECTIONS.map(c=>c.emission)), origBase))}, на маркете: ${formatPrice(minMarket)}</div>`;
+    html += `<div class="muted">Самая дешёвая common при базе ${formatPrice(origBase)}: ${formatPrice(commonPrice(Math.max(...COLLECTIONS.map(c=>c.emission)), origBase))}, на маркете: ${formatPrice(minMarket)}</div>`;
   } else {
     html += `Базовая цена common «x kaidzen 1»: <b>${formatPrice(base)}</b>`;
+  }
+  if (compareActive) {
+    html += `<div class="muted" style="margin-top:6px">Сравнение с редкостью <b>${compareRarityKey}</b> на маркете: ${formatPrice(compareMarketPrice)}</div>`;
   }
   info.innerHTML = html;
 
@@ -318,10 +435,20 @@ function renderList() {
     return;
   }
 
+  const compareActive = compareRarityKey && compareMarketPrice;
+
   let html = '<div class="coll-list">';
   for (const c of list) {
     const isOpen = openState[c.name] ? 'open' : '';
     const diff = (c.emission / BASE_EMISSION).toFixed(2);
+
+    // правая колонка: common-цена + опционально % отклонение
+    let diffHtml = '';
+    if (compareActive && c.compareDiff !== null && c.compareDiff !== undefined) {
+      const cls = diffClass(c.compareDiff);
+      diffHtml = `<div class="coll-diff ${cls}">${formatDiff(c.compareDiff)}</div>`;
+    }
+
     html += `<div class="coll-item ${isOpen}" data-name="${escapeAttr(c.name)}">
       <div class="coll-header" onclick="toggleItem('${escapeAttr(c.name)}')">
         <div class="coll-left">
@@ -334,18 +461,28 @@ function renderList() {
           </div>
         </div>
         <div class="coll-right">
-          <span class="coll-common-price">${formatPrice(c.commonPrice)}</span>
+          <div class="coll-price-block">
+            <span class="coll-common-price">${formatPrice(c.commonPrice)}</span>
+            ${diffHtml}
+          </div>
           <span class="chev"></span>
         </div>
       </div>
       <div class="rarities">
         <div class="rarities-inner">
-          ${c.prices.map(p => `
-            <div class="rarity-row">
-              <span class="rname">${p.label}<span class="rmult">×${p.mult}</span></span>
-              <span class="rprice">${formatPrice(p.price)}</span>
-            </div>
-          `).join('')}
+          ${c.prices.map(p => {
+            let rdiffHtml = '';
+            if (compareActive && p.key === compareRarityKey) {
+              const d = calcDiffPercent(p.price, compareMarketPrice);
+              const cls = diffClass(d);
+              rdiffHtml = `<span class="rdiff ${cls}">${formatDiff(d)}</span>`;
+            }
+            return `
+              <div class="rarity-row">
+                <span class="rname">${p.label}<span class="rmult">×${p.mult}</span></span>
+                <span><span class="rprice">${formatPrice(p.price)}</span>${rdiffHtml}</span>
+              </div>`;
+          }).join('')}
         </div>
       </div>
     </div>`;
@@ -375,8 +512,6 @@ function renderSummary(base) {
     `Макс. common: <b>${escapeHtml(expensivest.name)}</b> — ${formatPrice(expensivest.commonPrice)}`;
 }
 
-// адаптивное форматирование:
-// >= 1000 -> 1 знак; >= 100 -> 2; >= 1 -> 2; >= 0.01 -> 2; >= 0.0001 -> 4; иначе 6
 function formatPrice(p) {
   if (p >= 1000)   return p.toFixed(1);
   if (p >= 1)      return p.toFixed(2);
