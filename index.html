@@ -49,7 +49,8 @@
 
   .filters { display: flex; gap: 6px; flex-wrap: wrap; margin: 14px 0 6px; }
   .chip {
-    padding: 7px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+    padding: 7px 12px; border-radius: 20px;
+    font-size: 14px; font-weight: 800;
     background: var(--tg-theme-secondary-bg-color, #2c2c2e);
     border: 1px solid var(--tg-theme-hint-color, #3a3a3c);
     cursor: pointer; user-select: none; transition: all 0.15s;
@@ -84,14 +85,17 @@
     text-overflow: ellipsis;
   }
   .coll-meta {
-    font-size: 11px;
-    font-weight: 700;
-    opacity: 0.55;
+    font-size: 14px;
+    font-weight: 800;
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
     text-transform: lowercase;
   }
+  .coll-meta .meta-emission { opacity: 0.55; font-weight: 700; }
+  .coll-meta .meta-count    { opacity: 0.55; font-weight: 700; }
+  .coll-meta .meta-mult     { opacity: 0.55; font-weight: 700; }
+
   .rarity-common    { color: #8e8e93; }
   .rarity-special   { color: #5ac8fa; }
   .rarity-event     { color: #ff9500; }
@@ -342,9 +346,6 @@ function commonPrice(emission, base) {
   return base * BASE_EMISSION / emission;
 }
 
-// ПРИБЫЛЬ: сколько заработаешь, купив по market и продав по calculated
-// profit_abs = calculated - market
-// profit_pct = (calculated - market) / market * 100
 function calcProfit(calculated, market) {
   if (!market || market <= 0 || !calculated || calculated <= 0) {
     return { abs: null, pct: null };
@@ -356,15 +357,14 @@ function calcProfit(calculated, market) {
 
 function profitClass(pct) {
   if (pct === null) return '';
-  if (pct > 0.5) return 'up';    // прибыль → зелёный
-  if (pct < -0.5) return 'down'; // убыток → красный
+  if (pct > 0.5) return 'up';
+  if (pct < -0.5) return 'down';
   return 'eq';
 }
 
 function formatProfitAbs(abs) {
   if (abs === null) return '';
   const sign = abs > 0 ? '+' : '';
-  // адаптивное округление
   if (Math.abs(abs) >= 100) return `${sign}${abs.toFixed(1)}`;
   if (Math.abs(abs) >= 1)   return `${sign}${abs.toFixed(2)}`;
   if (Math.abs(abs) >= 0.01) return `${sign}${abs.toFixed(3)}`;
@@ -445,7 +445,6 @@ function renderList() {
     const isOpen = openState[c.name] ? 'open' : '';
     const diff = (c.emission / BASE_EMISSION).toFixed(2);
 
-    // % по common в шапке
     const commonMarket = marketPrices[c.name]?.['common'];
     const cp = calcProfit(c.commonPrice, commonMarket);
     let diffHtml = '';
@@ -459,9 +458,9 @@ function renderList() {
           <div class="coll-name">${escapeHtml(c.name)}</div>
           <div class="coll-meta">
             <span class="rarity-${c.rarity}">${c.rarity}</span>
-            <span>×${c.count}</span>
-            <span>${c.emission.toLocaleString('ru-RU')}</span>
-            <span>${diff}×</span>
+            <span class="meta-count">×${c.count}</span>
+            <span class="meta-emission">(эмиссия ${c.emission.toLocaleString('ru-RU')})</span>
+            <span class="meta-mult">${diff}×</span>
           </div>
         </div>
         <div class="coll-right">
@@ -480,11 +479,12 @@ function renderList() {
             const cls = profitClass(pr.pct);
             const absLabel = pr.abs === null ? '' : formatProfitAbs(pr.abs);
             const pctLabel = pr.pct === null ? '' : formatProfitPct(pr.pct);
+            const emissionInRow = Math.round(c.emission * p.mult);
             return `
               <div class="rarity-row">
                 <div class="rarity-name-block">
                   <span class="rname">${p.label}<span class="rmult">×${p.mult}</span></span>
-                  <span class="rprice">${formatPrice(p.price)}</span>
+                  <span class="rprice">${formatPrice(p.price)} <span class="rmult">(эмиссия ${emissionInRow.toLocaleString('ru-RU')})</span></span>
                 </div>
                 <input
                   class="rmarket-input"
@@ -522,7 +522,6 @@ function onMarketInput(input) {
     marketPrices[coll][rar] = val;
   }
 
-  // обновляем % в строке
   const row = input.closest('.rarity-row');
   const diffEl = row.querySelector('.rdiff');
   const collData = currentData.find(c => c.name === coll);
@@ -539,7 +538,6 @@ function onMarketInput(input) {
     }
   }
 
-  // обновляем шапку коллекции (для common)
   if (rar === 'common') {
     const headerBlock = document.querySelector(`.coll-item[data-name="${cssEscape(coll)}"] .coll-price-block`);
     const existing = headerBlock?.querySelector('.coll-diff');
