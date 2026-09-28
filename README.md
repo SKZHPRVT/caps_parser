@@ -1,11 +1,12 @@
-# Caps Price Calculator
+# Calculator
 
-Telegram Mini App для пересчёта цен коллекций относительно x kaidzen 1.
+Simple web calculator with a clean mobile-friendly UI.
 
-## Логика
-- Базовая точка: x kaidzen 1, тираж 1200, цена 5
-- Формула: цена = 5 × 1200 / тираж
-- При вводе минимальной цены — пересчёт базы и всех коллекций
+## Features
+- Input any base value
+- Instant recalculated results
+- Filterable data table
+- Works offline after load
 
-## Открыть
-https://ТВОЙ_НИК.github.io/caps_parser/
+## Usage
+Open `index.html` in any modern browser.
