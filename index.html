@@ -116,8 +116,8 @@
     font-weight: 800;
     white-space: nowrap;
   }
-  .coll-diff.up   { color: #ff453a; }
-  .coll-diff.down { color: #4cd964; }
+  .coll-diff.up   { color: #4cd964; }
+  .coll-diff.down { color: #ff453a; }
   .coll-diff.eq   { color: #8e8e93; }
 
   .chev {
@@ -176,13 +176,19 @@
     font-size: 12px;
     font-weight: 800;
     white-space: nowrap;
-    min-width: 56px;
     text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+    min-width: 78px;
   }
-  .rdiff.up   { color: #ff453a; }
-  .rdiff.down { color: #4cd964; }
+  .rdiff .rdiff-abs { font-size: 12px; }
+  .rdiff .rdiff-pct { font-size: 11px; opacity: 0.85; }
+  .rdiff.up   { color: #4cd964; }
+  .rdiff.down { color: #ff453a; }
   .rdiff.eq   { color: #8e8e93; opacity: 0.7; }
-  .rdiff.empty { opacity: 0; }
+  .rdiff.empty { opacity: 0.3; }
 
   .empty { text-align: center; padding: 40px 20px; opacity: 0.5; font-size: 14px; }
   .summary {
@@ -330,29 +336,47 @@ let currentData = [];
 let activeFilter = "all";
 let searchQuery = "";
 const openState = {};
-// marketPrices[collectionName][rarityKey] = число
 const marketPrices = {};
 
 function commonPrice(emission, base) {
   return base * BASE_EMISSION / emission;
 }
 
-function calcDiffPercent(calculated, market) {
-  if (!market || market <= 0 || !calculated || calculated <= 0) return null;
-  return ((market - calculated) / calculated) * 100;
+// ПРИБЫЛЬ: сколько заработаешь, купив по market и продав по calculated
+// profit_abs = calculated - market
+// profit_pct = (calculated - market) / market * 100
+function calcProfit(calculated, market) {
+  if (!market || market <= 0 || !calculated || calculated <= 0) {
+    return { abs: null, pct: null };
+  }
+  const abs = calculated - market;
+  const pct = (abs / market) * 100;
+  return { abs, pct };
 }
 
-function diffClass(pct) {
+function profitClass(pct) {
   if (pct === null) return '';
-  if (pct > 0.5) return 'up';
-  if (pct < -0.5) return 'down';
+  if (pct > 0.5) return 'up';    // прибыль → зелёный
+  if (pct < -0.5) return 'down'; // убыток → красный
   return 'eq';
 }
 
-function formatDiff(pct) {
+function formatProfitAbs(abs) {
+  if (abs === null) return '';
+  const sign = abs > 0 ? '+' : '';
+  // адаптивное округление
+  if (Math.abs(abs) >= 100) return `${sign}${abs.toFixed(1)}`;
+  if (Math.abs(abs) >= 1)   return `${sign}${abs.toFixed(2)}`;
+  if (Math.abs(abs) >= 0.01) return `${sign}${abs.toFixed(3)}`;
+  return `${sign}${abs.toFixed(5)}`;
+}
+
+function formatProfitPct(pct) {
   if (pct === null) return '';
   const sign = pct > 0 ? '+' : '';
-  return `${sign}${pct.toFixed(1)}%`;
+  if (Math.abs(pct) >= 1000) return `${sign}${pct.toFixed(0)}%`;
+  if (Math.abs(pct) >= 100)  return `${sign}${pct.toFixed(1)}%`;
+  return `${sign}${pct.toFixed(2)}%`;
 }
 
 function calculate() {
@@ -421,12 +445,12 @@ function renderList() {
     const isOpen = openState[c.name] ? 'open' : '';
     const diff = (c.emission / BASE_EMISSION).toFixed(2);
 
-    // % по common (если для common введена цена)
+    // % по common в шапке
     const commonMarket = marketPrices[c.name]?.['common'];
-    const commonDiff = calcDiffPercent(c.commonPrice, commonMarket);
+    const cp = calcProfit(c.commonPrice, commonMarket);
     let diffHtml = '';
-    if (commonDiff !== null) {
-      diffHtml = `<div class="coll-diff ${diffClass(commonDiff)}">${formatDiff(commonDiff)}</div>`;
+    if (cp.pct !== null) {
+      diffHtml = `<div class="coll-diff ${profitClass(cp.pct)}">${formatProfitAbs(cp.abs)} (${formatProfitPct(cp.pct)})</div>`;
     }
 
     html += `<div class="coll-item ${isOpen}" data-name="${escapeAttr(c.name)}">
@@ -452,9 +476,10 @@ function renderList() {
         <div class="rarities-inner">
           ${c.prices.map(p => {
             const savedMarket = marketPrices[c.name]?.[p.key] ?? '';
-            const d = calcDiffPercent(p.price, parseFloat(savedMarket));
-            const cls = diffClass(d);
-            const diffLabel = d === null ? '' : formatDiff(d);
+            const pr = calcProfit(p.price, parseFloat(savedMarket));
+            const cls = profitClass(pr.pct);
+            const absLabel = pr.abs === null ? '' : formatProfitAbs(pr.abs);
+            const pctLabel = pr.pct === null ? '' : formatProfitPct(pr.pct);
             return `
               <div class="rarity-row">
                 <div class="rarity-name-block">
@@ -472,7 +497,9 @@ function renderList() {
                   data-rar="${p.key}"
                   oninput="onMarketInput(this)"
                 >
-                <span class="rdiff ${cls} ${d === null ? 'empty' : ''}">${diffLabel || '—'}</span>
+                <span class="rdiff ${cls} ${pr.pct === null ? 'empty' : ''}">
+                  ${pr.pct === null ? '—' : `<span class="rdiff-abs">${absLabel}</span><span class="rdiff-pct">(${pctLabel})</span>`}
+                </span>
               </div>`;
           }).join('')}
         </div>
@@ -495,39 +522,40 @@ function onMarketInput(input) {
     marketPrices[coll][rar] = val;
   }
 
-  // обновляем только % в этой строке + common% в шапке
+  // обновляем % в строке
   const row = input.closest('.rarity-row');
   const diffEl = row.querySelector('.rdiff');
-
-  // находим расчётную цену
   const collData = currentData.find(c => c.name === coll);
   const rData = collData?.prices.find(p => p.key === rar);
+
   if (rData) {
-    const d = calcDiffPercent(rData.price, val);
-    const cls = diffClass(d);
-    diffEl.className = `rdiff ${cls} ${d === null ? 'empty' : ''}`;
-    diffEl.textContent = d === null ? '—' : formatDiff(d);
+    const pr = calcProfit(rData.price, val);
+    const cls = profitClass(pr.pct);
+    diffEl.className = `rdiff ${cls} ${pr.pct === null ? 'empty' : ''}`;
+    if (pr.pct === null) {
+      diffEl.textContent = '—';
+    } else {
+      diffEl.innerHTML = `<span class="rdiff-abs">${formatProfitAbs(pr.abs)}</span><span class="rdiff-pct">(${formatProfitPct(pr.pct)})</span>`;
+    }
   }
 
-  // обновляем % в шапке коллекции (если это common)
+  // обновляем шапку коллекции (для common)
   if (rar === 'common') {
-    const headerEl = document.querySelector(`.coll-item[data-name="${cssEscape(coll)}"] .coll-diff`);
-    const d = calcDiffPercent(collData.commonPrice, val);
-    if (headerEl) {
-      if (d === null) {
-        headerEl.remove();
-      } else {
-        headerEl.className = `coll-diff ${diffClass(d)}`;
-        headerEl.textContent = formatDiff(d);
-      }
-    } else if (d !== null) {
-      // создаём, если не было
-      const block = document.querySelector(`.coll-item[data-name="${cssEscape(coll)}"] .coll-price-block`);
-      if (block) {
+    const headerBlock = document.querySelector(`.coll-item[data-name="${cssEscape(coll)}"] .coll-price-block`);
+    const existing = headerBlock?.querySelector('.coll-diff');
+    const pr = calcProfit(collData.commonPrice, val);
+    if (pr.pct === null) {
+      if (existing) existing.remove();
+    } else {
+      const text = `${formatProfitAbs(pr.abs)} (${formatProfitPct(pr.pct)})`;
+      if (existing) {
+        existing.className = `coll-diff ${profitClass(pr.pct)}`;
+        existing.textContent = text;
+      } else if (headerBlock) {
         const el = document.createElement('div');
-        el.className = `coll-diff ${diffClass(d)}`;
-        el.textContent = formatDiff(d);
-        block.appendChild(el);
+        el.className = `coll-diff ${profitClass(pr.pct)}`;
+        el.textContent = text;
+        headerBlock.appendChild(el);
       }
     }
   }
