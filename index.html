@@ -459,7 +459,7 @@ function renderList() {
           <div class="coll-meta">
             <span class="rarity-${c.rarity}">${c.rarity}</span>
             <span class="meta-count">×${c.count}</span>
-            <span class="meta-emission">(эмиссия ${c.emission.toLocaleString('ru-RU')})</span>
+            <span class="meta-emission">(${c.emission.toLocaleString('ru-RU')})</span>
             <span class="meta-mult">${diff}×</span>
           </div>
         </div>
@@ -484,7 +484,7 @@ function renderList() {
               <div class="rarity-row">
                 <div class="rarity-name-block">
                   <span class="rname">${p.label}<span class="rmult">×${p.mult}</span></span>
-                  <span class="rprice">${formatPrice(p.price)} <span class="rmult">(эмиссия ${emissionInRow.toLocaleString('ru-RU')})</span></span>
+                  <span class="rprice">${formatPrice(p.price)} <span class="rmult">(${emissionInRow.toLocaleString('ru-RU')})</span></span>
                 </div>
                 <input
                   class="rmarket-input"
